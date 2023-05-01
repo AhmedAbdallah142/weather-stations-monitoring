@@ -1,4 +1,4 @@
-package ddia;
+package ddia.centralStation.messageReciever;
 
 public class ReceivedMessageHandler {
     public static void processMessage(String message) {
@@ -7,4 +7,6 @@ public class ReceivedMessageHandler {
         //TODO: Archive message in parquet Files
         //TODO: update bitCask state --> (bitCask manage class may be singleton)
     }
+
+
 }

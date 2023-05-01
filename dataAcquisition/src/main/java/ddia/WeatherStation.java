@@ -14,7 +14,7 @@ public class WeatherStation {
     private static final double DROP_RATE = 0.1;
     private static final String topicName = "stations-status";
     private static long sNo = 1;
-    
+
     public static void main(String[] args) throws InterruptedException {
         int STATION_ID = Integer.parseInt(args[0]);
 
@@ -28,6 +28,7 @@ public class WeatherStation {
 
         Random random = new Random();
         try (KafkaProducer<String, String> producer = new KafkaProducer<>(properties)) {
+            //noinspection InfiniteLoopStatement
             while (true) {
                 // Generate the weather status message
                 String batteryStatus = selectBatteryStatus(random);
@@ -43,10 +44,10 @@ public class WeatherStation {
 
                 // Determine if the message should be dropped
                 if (random.nextDouble() < DROP_RATE) {
-                    // Producer send message
-                    producer.send(new ProducerRecord<>(topicName, message));
                     System.out.println("Message dropped: " + message);
                 } else {
+                    // Producer send message
+                    producer.send(new ProducerRecord<>(topicName, message));
                     System.out.println("Weather status message: " + message);
                 }
 
