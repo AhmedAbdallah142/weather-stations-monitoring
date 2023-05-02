@@ -1,4 +1,4 @@
-package ddia.bitcask.Service;
+package ddia.bitcask.service;
 
 import java.io.IOException;
 import java.util.List;

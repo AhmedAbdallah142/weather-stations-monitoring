@@ -1,4 +1,4 @@
-package ddia.bitcask.Service.Impl;
+package ddia.bitcask.service.Impl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import ddia.bitcask.Service.Bitcask;
+import ddia.bitcask.service.Bitcask;
 import ddia.bitcask.model.Key;
 import ddia.bitcask.model.RecordRef;
 
@@ -22,14 +22,14 @@ public class BitcaskImpl implements Bitcask {
     public final String directory;
     private final Map<Key, RecordRef> keydir;
     private final FileWriter fileWriter;
-    private final FileManager fileManager;
+    private final FileReader fileManager;
     private boolean mergeRunning = false;
 
     public BitcaskImpl(String directory) throws IOException {
         this.directory = directory;
         this.keydir = new ConcurrentHashMap<Key, RecordRef>();
         this.fileWriter = new FileWriter(directory);
-        this.fileManager = new FileManager();
+        this.fileManager = new FileReader();
         start();
     }
 
@@ -37,13 +37,13 @@ public class BitcaskImpl implements Bitcask {
     public byte[] get(byte[] keyBytes) throws IOException {
         var key = new Key(keyBytes);
         var record = fileManager.getRecord(keydir.get(key));
-        return RecordConverter.toKeyValuePair(record).getValue();
+        return RecordParser.toKeyValuePair(record).getValue();
     }
 
     @Override
     public void put(byte[] keyBytes, byte[] value) throws IOException {
         var key = new Key(keyBytes);
-        var recordRef = fileWriter.append(RecordConverter.toRecord(key, value));
+        var recordRef = fileWriter.append(RecordParser.toRecord(key, value));
         keydir.put(key, recordRef);
     }
 
@@ -164,7 +164,7 @@ public class BitcaskImpl implements Bitcask {
             if (activePath.compareTo(recordRef.getFilePath()) > 0) {
                 var record = fileManager.getRecord(recordRef);
                 dataFileWriter.write(record);
-                hintFileWriter.write(RecordConverter.toHintRecord(key, record.length, offset));
+                hintFileWriter.write(RecordParser.toHintRecord(key, record.length, offset));
                 updateMap.put(key, new ToUpdateRef(recordRef, offset));
                 offset += record.length;
             }
@@ -240,7 +240,7 @@ public class BitcaskImpl implements Bitcask {
         var inputStream = new BufferedInputStream(new FileInputStream(hinFile));
 
         while(inputStream.available() > 0) {
-            var pair = RecordConverter.readNextRecordHint(inputStream);
+            var pair = RecordParser.readNextRecordHint(inputStream);
             pair.getValue().setFilePath(dataFilePath);
             keydir.put(pair.getKey(), pair.getValue());
         }
@@ -258,7 +258,7 @@ public class BitcaskImpl implements Bitcask {
             var inputStream = new BufferedInputStream(new FileInputStream(file));
             long offset = 0;
             while(inputStream.available() > 0) {
-                var pair = RecordConverter.readNextRecordData(inputStream);
+                var pair = RecordParser.readNextRecordData(inputStream);
                 var recordRef = pair.getValue();
                 recordRef.setFilePath(file.getAbsolutePath());
                 recordRef.setOffset(offset);

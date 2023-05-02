@@ -1,4 +1,4 @@
-package ddia.bitcask.Service.Impl;
+package ddia.bitcask.service.Impl;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import ddia.bitcask.Service.Bitcask;
+import ddia.bitcask.service.Bitcask;
 
 public class BitcaskImplTest {
 

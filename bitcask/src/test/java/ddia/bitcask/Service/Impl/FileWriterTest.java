@@ -1,4 +1,4 @@
-package ddia.bitcask.Service.Impl;
+package ddia.bitcask.service.Impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;

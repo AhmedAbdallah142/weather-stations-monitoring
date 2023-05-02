@@ -1,4 +1,4 @@
-package ddia.bitcask.Service.Impl;
+package ddia.bitcask.service.Impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +8,7 @@ import java.util.Map;
 import ddia.bitcask.model.Key;
 import ddia.bitcask.model.RecordRef;
 
-public class RecordConverter {
+public class RecordParser {
 
     public static final int keySizeBytes = 2, valueSizeBytes = 4, offestSizeBytes = 8;
 
