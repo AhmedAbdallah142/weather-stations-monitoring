@@ -6,17 +6,13 @@ import lombok.Getter;
 
 @Getter
 public class Key {
-    
-    public static final int MAX_LENGTH = (1 << 16) - 1;
 
-    public static void main(String[] args) {
-        System.out.println(MAX_LENGTH);
-    }
+    public static final int MAX_LENGTH = (1 << 16) - 1;
 
     private byte[] bytes;
 
     public Key(byte[] bytes) {
-        if(bytes.length > MAX_LENGTH)
+        if (bytes.length > MAX_LENGTH)
             throw new RuntimeException("Key is too long");
         this.bytes = bytes;
     }
@@ -28,7 +24,7 @@ public class Key {
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj)
+        if (this == obj)
             return true;
         if (obj instanceof Key) {
             Key other = (Key) obj;

@@ -14,9 +14,9 @@ public class BitcaskImplTest {
     @Test
     void testBitcask() throws IOException {
         Bitcask bitcask = new BitcaskImpl("data/test-dir");
-        
-        byte[] key1 = {1}, value1 = {1, 2, 3};
-        byte[] key2 = {2}, value2 = {2, 4, 7}, value3 = {3, 5, 8, 9};
+
+        byte[] key1 = { 1 }, value1 = { 1, 2, 3 };
+        byte[] key2 = { 2 }, value2 = { 2, 4, 7 }, value3 = { 3, 5, 8, 9 };
         bitcask.put(key1, value1);
         bitcask.put(key2, value2);
         bitcask.put(key2, value3);
@@ -32,14 +32,14 @@ public class BitcaskImplTest {
 
     // @Test
     // void testMerge() throws IOException {
-    //     BitcaskImpl bitcask = new BitcaskImpl("data/test-dir");
-    //     byte[] key1 = {1}, key2 = {2};
-    //     byte[] value1 = {1, 2, 3}, value2 = {2, 4, 7}, value3 = {3, 5, 8, 9};
-    //     bitcask.put(key1, value1);
-    //     bitcask.put(key2, value2);
-    //     bitcask.put(key1, value3);
-        
-    //     bitcask.doMerge();
+    // BitcaskImpl bitcask = new BitcaskImpl("data/test-dir");
+    // byte[] key1 = {1}, key2 = {2};
+    // byte[] value1 = {1, 2, 3}, value2 = {2, 4, 7}, value3 = {3, 5, 8, 9};
+    // bitcask.put(key1, value1);
+    // bitcask.put(key2, value2);
+    // bitcask.put(key1, value3);
+
+    // bitcask.doMerge();
     // }
 
 }

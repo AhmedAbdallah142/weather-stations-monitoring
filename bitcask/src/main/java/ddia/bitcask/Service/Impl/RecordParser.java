@@ -58,7 +58,7 @@ public class RecordParser {
         var recordFixedSize = keySizeBytes + valueSizeBytes + offestSizeBytes;
 
         var recordHead = hintFilStream.readNBytes(recordFixedSize);
-        if(recordHead.length < recordFixedSize)
+        if (recordHead.length < recordFixedSize)
             throw new RuntimeException("Failed to read the record");
 
         ByteBuffer buffer = ByteBuffer.wrap(recordHead);
@@ -68,7 +68,7 @@ public class RecordParser {
         long offset = buffer.getLong();
 
         byte[] keyBytes = hintFilStream.readNBytes(ksz);
-        if(keyBytes.length < ksz)
+        if (keyBytes.length < ksz)
             throw new RuntimeException("Failed to read the record");
 
         var recordRef = RecordRef.builder().offset(offset).recordLength(rsz).build();
@@ -80,7 +80,7 @@ public class RecordParser {
         var recordFixedSize = keySizeBytes + valueSizeBytes;
 
         var recordHead = dataFilStream.readNBytes(recordFixedSize);
-        if(recordHead.length < recordFixedSize)
+        if (recordHead.length < recordFixedSize)
             throw new RuntimeException("Failed to read the record");
 
         ByteBuffer buffer = ByteBuffer.wrap(recordHead);
@@ -89,10 +89,10 @@ public class RecordParser {
         int vsz = buffer.getInt();
 
         byte[] keyBytes = dataFilStream.readNBytes(ksz);
-        if(keyBytes.length < ksz)
+        if (keyBytes.length < ksz)
             throw new RuntimeException("Failed to read the record");
         byte[] valueBytes = dataFilStream.readNBytes(vsz);
-        if(valueBytes.length < vsz)
+        if (valueBytes.length < vsz)
             throw new RuntimeException("Failed to read the record");
 
         var recordRef = RecordRef.builder().recordLength(recordFixedSize + ksz + vsz).build();

@@ -82,7 +82,8 @@ public class BitcaskImpl implements Bitcask {
         @Override
         public boolean accept(File dir, String name) {
             int t = name.lastIndexOf(".");
-            if(t < 0) return false; 
+            if (t < 0)
+                return false;
             return fileName.compareTo(name.substring(0, t)) > 0;
         }
     }
@@ -97,7 +98,8 @@ public class BitcaskImpl implements Bitcask {
         @Override
         public boolean accept(File dir, String name) {
             int t = name.lastIndexOf(".");
-            if(t < 0) return false; 
+            if (t < 0)
+                return false;
             return fileName.compareTo(name.substring(0, t)) < 0;
         }
     }
@@ -239,7 +241,7 @@ public class BitcaskImpl implements Bitcask {
         String dataFilePath = hinFile.getAbsolutePath().replace(".hint", ".data");
         var inputStream = new BufferedInputStream(new FileInputStream(hinFile));
 
-        while(inputStream.available() > 0) {
+        while (inputStream.available() > 0) {
             var pair = RecordParser.readNextRecordHint(inputStream);
             pair.getValue().setFilePath(dataFilePath);
             keydir.put(pair.getKey(), pair.getValue());
@@ -251,13 +253,13 @@ public class BitcaskImpl implements Bitcask {
     protected void loadFromDataFiles(File[] dataFiles) throws IOException {
         if (dataFiles == null || dataFiles.length <= 0)
             return;
-        
+
         Arrays.sort(dataFiles);
-        
-        for (var file: dataFiles) {
+
+        for (var file : dataFiles) {
             var inputStream = new BufferedInputStream(new FileInputStream(file));
             long offset = 0;
-            while(inputStream.available() > 0) {
+            while (inputStream.available() > 0) {
                 var pair = RecordParser.readNextRecordData(inputStream);
                 var recordRef = pair.getValue();
                 recordRef.setFilePath(file.getAbsolutePath());
