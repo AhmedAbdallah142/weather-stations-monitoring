@@ -1,7 +1,11 @@
 package ddia.centralStation.models;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 public class WeatherStatus {
-    int humidity, temperature, windSpeed;
+    int humidity, temperature;
+    @JsonProperty("wind_speed")
+    int windSpeed;
 
     public int getHumidity() {
         return humidity;
@@ -25,5 +29,14 @@ public class WeatherStatus {
 
     public void setWindSpeed(int windSpeed) {
         this.windSpeed = windSpeed;
+    }
+
+    @Override
+    public String toString() {
+        return "WeatherStatus{" +
+                "humidity=" + humidity +
+                ", temperature=" + temperature +
+                ", windSpeed=" + windSpeed +
+                '}';
     }
 }

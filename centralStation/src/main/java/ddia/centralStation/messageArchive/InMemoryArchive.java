@@ -2,6 +2,7 @@ package ddia.centralStation.messageArchive;
 
 import ddia.centralStation.models.StationStatusMessage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,16 +19,23 @@ public class InMemoryArchive {
         this.batchSize = batchSize;
     }
 
-    public void onNewMessageDelivered(StationStatusMessage message) {
+    public void onNewMessageDelivered(StationStatusMessage message) throws IOException {
         cachedData.add(message);
         if (cachedData.size() >= batchSize) {
             processAndWriteBatch();
+            cachedData = new ArrayList<>();
         }
     }
 
-    private void processAndWriteBatch() {
-        //TODO convert time stamp to day --> and write the data into parquet
-        Map<Long, Map<Long, List<StationStatusMessage>>> map = cachedData.stream().collect(Collectors.groupingBy(StationStatusMessage::getStationId, Collectors.groupingBy(message -> message.getStatusTimestamp() / 1000)));
-        cachedData = new ArrayList<>();
+    private void processAndWriteBatch() throws IOException {
+        Map<Long, Map<String, List<StationStatusMessage>>> map = cachedData.stream().collect(Collectors.groupingBy(StationStatusMessage::getStationId, Collectors.groupingBy(StationStatusMessage::getStatusDayDate)));
+        for (Long stationId : map.keySet()) {
+            Map<String, List<StationStatusMessage>> dayDateMap = map.get(stationId);
+            for (String dayDate : dayDateMap.keySet()) {
+                String partitionPath = String.format("%s/%d/%s", directoryPath, stationId, dayDate);
+                ParquetFileWriter.writeListToParquetFile(dayDateMap.get(dayDate), partitionPath);
+            }
+        }
+
     }
 }

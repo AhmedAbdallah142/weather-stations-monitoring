@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.apache.parquet.hadoop.metadata.CompressionCodecName.SNAPPY;
-
+import org.apache.parquet.hadoop.ParquetFileWriter.Mode;
 
 public class ParquetFileWriter {
 
@@ -31,7 +31,7 @@ public class ParquetFileWriter {
                 .withDataModel(ReflectData.get())
                 .withConf(new Configuration())
                 .withCompressionCodec(SNAPPY)
-                .withWriteMode(org.apache.parquet.hadoop.ParquetFileWriter.Mode.valueOf("append"))
+                .withWriteMode(Mode.CREATE)
                 .build()) {
             for (StationStatusMessage message : messages) {
                 writer.write(message);

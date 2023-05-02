@@ -1,8 +1,22 @@
 package ddia.centralStation.models;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 public class StationStatusMessage {
-    long stationId, sNo, statusTimestamp;
+    @JsonProperty("station_id")
+    long stationId;
+    @JsonProperty("s_no")
+    long sNo;
+    @JsonProperty("status_timestamp")
+    long statusTimestamp;
+    @JsonProperty("battery_status")
     String batteryStatus;
+
     WeatherStatus weather;
 
     public long getStationId() {
@@ -25,6 +39,15 @@ public class StationStatusMessage {
         return statusTimestamp;
     }
 
+    public String getStatusDayDate() {
+        LocalDateTime dateTime = Instant.ofEpochMilli(statusTimestamp)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        // format LocalDateTime to a year-month-day string
+        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
     public void setStatusTimestamp(long statusTimestamp) {
         this.statusTimestamp = statusTimestamp;
     }
@@ -43,6 +66,17 @@ public class StationStatusMessage {
 
     public void setWeather(WeatherStatus weather) {
         this.weather = weather;
+    }
+
+    @Override
+    public String toString() {
+        return "StationStatusMessage{" +
+                "stationId=" + stationId +
+                ", sNo=" + sNo +
+                ", statusTimestamp=" + statusTimestamp +
+                ", batteryStatus='" + batteryStatus + '\'' +
+                ", weather=" + weather +
+                '}';
     }
 }
 

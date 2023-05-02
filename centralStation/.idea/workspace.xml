@@ -5,20 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91517d3f-ab29-4558-aede-97badcfb4624" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/codeStyles/Project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/dataIntensiveApps/Constants.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/dataIntensiveApps/dataAcquisition/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/dataIntensiveApps/indexing/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/dataIntensiveApps/processing_archiving/KafkaMessageConsumer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/dataIntensiveApps/processing_archiving/ReceivedMessageHandler.java" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/centralStation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/weather-stations-monitoring.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/CentralStationApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/CentralStationApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/InMemoryArchive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/InMemoryArchive.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/ParquetFileWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/ParquetFileWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageReciever/KafkaMessageConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageReciever/KafkaMessageConsumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageReciever/ReceivedMessageHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageReciever/ReceivedMessageHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageReciever/StringToMessageConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageReciever/StringToMessageConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/models/StationStatusMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/models/StationStatusMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/models/WeatherStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/models/WeatherStatus.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +29,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
@@ -43,6 +45,28 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunManager">
+    <configuration name="CentralStationApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ddia.centralStation.CentralStationApp" />
+      <module name="centralStation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ddia.centralStation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.CentralStationApp" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -54,5 +78,16 @@
       <updated>1682870140682</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

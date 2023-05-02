@@ -8,8 +8,6 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
-import static ddia.centralStation.messageReciever.ReceivedMessageHandler.processMessage;
-
 
 public class KafkaMessageConsumer {
 
@@ -18,13 +16,14 @@ public class KafkaMessageConsumer {
         props.put("bootstrap.servers", kafkaServer);
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        ReceivedMessageHandler messageHandler = new ReceivedMessageHandler();
         try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
             consumer.subscribe(Collections.singletonList(topicName));
             //noinspection InfiniteLoopStatement
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, String> record : records) {
-                    processMessage(record.value());
+                    messageHandler.processMessage(record.value());
                 }
             }
         }
