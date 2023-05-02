@@ -4,21 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="91517d3f-ab29-4558-aede-97badcfb4624" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/codeStyles/Project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/dataIntensiveApps/Constants.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/dataIntensiveApps/dataAcquisition/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/dataIntensiveApps/indexing/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/dataIntensiveApps/processing_archiving/KafkaMessageConsumer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/dataIntensiveApps/processing_archiving/ReceivedMessageHandler.java" beforeDir="false" />
+    <list default="true" id="91517d3f-ab29-4558-aede-97badcfb4624" name="Changes" comment="partition by time first">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/InMemoryArchive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/InMemoryArchive.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/ParquetFileWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/ParquetFileWriter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +19,17 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
@@ -43,6 +43,28 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunManager">
+    <configuration name="CentralStationApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ddia.centralStation.CentralStationApp" />
+      <module name="centralStation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ddia.centralStation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.CentralStationApp" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -53,6 +75,37 @@
       <option name="presentableId" value="Default" />
       <updated>1682870140682</updated>
     </task>
+    <task id="LOCAL-00001" summary="archive data in parquet files partitioned by time and station id">
+      <created>1683021673492</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1683021673492</updated>
+    </task>
+    <task id="LOCAL-00002" summary="partition by time first">
+      <created>1683023221899</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1683023221899</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="archive data in parquet files partitioned by time and station id" />
+    <MESSAGE value="partition by time first" />
+    <option name="LAST_COMMIT_MESSAGE" value="partition by time first" />
   </component>
 </project>

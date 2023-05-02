@@ -1,4 +1,4 @@
-package ddia;
+package ddia.centralStation.messageReciever;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -8,29 +8,22 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
-import static ddia.ReceivedMessageHandler.processMessage;
-
 
 public class KafkaMessageConsumer {
-    private static final String KAFKA_BOOTSTRAP_SERVER = "localhost:9092";
-    private static final String KAFKA_TOPIC_NAME = "stations-status";
 
-    public static void main(String[] args) {
-        startConsuming();
-    }
-
-    private static void startConsuming() {
+    public static void startConsuming(String kafkaServer, String topicName) {
         Properties props = new Properties();
-        props.put("bootstrap.servers", KAFKA_BOOTSTRAP_SERVER);
+        props.put("bootstrap.servers", kafkaServer);
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        ReceivedMessageHandler messageHandler = new ReceivedMessageHandler();
         try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
-            consumer.subscribe(Collections.singletonList(KAFKA_TOPIC_NAME));
+            consumer.subscribe(Collections.singletonList(topicName));
             //noinspection InfiniteLoopStatement
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, String> record : records) {
-                    processMessage(record.value());
+                    messageHandler.processMessage(record.value());
                 }
             }
         }
