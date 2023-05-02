@@ -7,13 +7,13 @@ import ddia.bitcask.model.Key;
 
 public class RecordConverter {
 
-    public static final int keySizeBytes = 2, valueSizeBytes = 4;
+    public static final int keySizeBytes = 2, valueSizeBytes = 4, offestSizeBytes = 8;
 
     public static byte[] toRecord(Key key, byte[] value) {
         // record: keySize|valueSize|key|value
 
-        ByteBuffer buffer = ByteBuffer
-                .allocate(keySizeBytes + valueSizeBytes + key.getBytes().length + value.length);
+        final int size = keySizeBytes + valueSizeBytes + key.getBytes().length + value.length;
+        ByteBuffer buffer = ByteBuffer.allocate(size);
 
         buffer.putShort((short) key.getBytes().length)
                 .putInt(value.length)
@@ -36,12 +36,18 @@ public class RecordConverter {
         return Map.entry(new Key(keyBytes), value);
     }
 
-    public static void main(String[] args) {
-        ByteBuffer buffer = ByteBuffer.allocate(32);
-        buffer.putShort((short) 1);
-        buffer.putShort((short) 1);
+    public static byte[] toHintRecord(Key key, int recordSize, long offset) {
+        // record: keySize|recordSize|offset|key
 
-        System.out.println(buffer.position());
+        final int size = keySizeBytes + valueSizeBytes + offestSizeBytes + key.getBytes().length;
+        ByteBuffer buffer = ByteBuffer.allocate(size);
+
+        buffer.putShort((short) key.getBytes().length)
+                .putInt(recordSize)
+                .putLong(offset)
+                .put(key.getBytes());
+
+        return buffer.array();
     }
 
 }

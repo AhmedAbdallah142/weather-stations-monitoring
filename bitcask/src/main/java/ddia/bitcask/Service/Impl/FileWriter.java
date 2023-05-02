@@ -23,7 +23,7 @@ public class FileWriter {
         if (fileStream != null)
             fileStream.close();
 
-        file = new File(String.format("%s/data-%s.data", directory, System.currentTimeMillis()));
+        file = new File(String.format("%s/data-%019d.data", directory, System.currentTimeMillis()));
         file.getParentFile().mkdirs();
         boolean created = file.createNewFile();
 
@@ -40,6 +40,7 @@ public class FileWriter {
         }
 
         long offset = fileSize;
+        String currentFilePath = file.getAbsolutePath();
         fileStream.write(record);
         fileStream.flush();
         fileSize += record.length;
@@ -50,7 +51,7 @@ public class FileWriter {
         }
 
         return RecordRef.builder()
-                .filePath(file.getAbsolutePath())
+                .filePath(currentFilePath)
                 .offset(offset)
                 .recordLength(record.length)
                 .build();
