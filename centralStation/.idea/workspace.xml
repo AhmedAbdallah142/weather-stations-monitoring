@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="91517d3f-ab29-4558-aede-97badcfb4624" name="Changes" comment="archive data in parquet files partitioned by time and station id">
+    <list default="true" id="91517d3f-ab29-4558-aede-97badcfb4624" name="Changes" comment="partition by time first">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/CentralStationApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/CentralStationApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/InMemoryArchive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/InMemoryArchive.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/ParquetFileWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ddia/centralStation/messageArchive/ParquetFileWriter.java" afterDir="false" />
     </list>
@@ -83,7 +82,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683021673492</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="partition by time first">
+      <created>1683023221899</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1683023221899</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -99,6 +105,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="archive data in parquet files partitioned by time and station id" />
-    <option name="LAST_COMMIT_MESSAGE" value="archive data in parquet files partitioned by time and station id" />
+    <MESSAGE value="partition by time first" />
+    <option name="LAST_COMMIT_MESSAGE" value="partition by time first" />
   </component>
 </project>
