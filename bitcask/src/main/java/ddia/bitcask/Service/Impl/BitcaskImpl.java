@@ -1,10 +1,13 @@
 package ddia.bitcask.Service.Impl;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +25,12 @@ public class BitcaskImpl implements Bitcask {
     private final FileManager fileManager;
     private boolean mergeRunning = false;
 
-    public BitcaskImpl(String directory) {
+    public BitcaskImpl(String directory) throws IOException {
         this.directory = directory;
         this.keydir = new ConcurrentHashMap<Key, RecordRef>();
         this.fileWriter = new FileWriter(directory);
         this.fileManager = new FileManager();
+        start();
     }
 
     @Override
@@ -68,6 +72,50 @@ public class BitcaskImpl implements Bitcask {
         thread.start();
     }
 
+    private class olderFileFilter implements FilenameFilter {
+        String fileName;
+
+        olderFileFilter(String fileName) {
+            this.fileName = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+
+        @Override
+        public boolean accept(File dir, String name) {
+            int t = name.lastIndexOf(".");
+            if(t < 0) return false; 
+            return fileName.compareTo(name.substring(0, t)) > 0;
+        }
+    }
+
+    private class newerFileFilter implements FilenameFilter {
+        String fileName;
+
+        newerFileFilter(String fileName) {
+            this.fileName = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+
+        @Override
+        public boolean accept(File dir, String name) {
+            int t = name.lastIndexOf(".");
+            if(t < 0) return false; 
+            return fileName.compareTo(name.substring(0, t)) < 0;
+        }
+    }
+
+    private class HintFilter implements FilenameFilter {
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.endsWith(".hint");
+        }
+    }
+
+    private class DataFilter implements FilenameFilter {
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.endsWith(".data");
+        }
+    }
+
     protected long extractTime(String filePath) {
         String time = new File(filePath).getName().substring(5, 5 + 19);
         return Long.valueOf(time);
@@ -81,20 +129,6 @@ public class BitcaskImpl implements Bitcask {
             this.recordRef = recordRef;
             this.offsetMerge = offsetMerge;
         }
-    }
-
-    private class myFileFilter implements FilenameFilter {
-        String mergeFileName;
-
-        myFileFilter(String mergeFileName) {
-            this.mergeFileName = mergeFileName;
-        }
-
-        @Override
-        public boolean accept(File dir, String name) {
-            return mergeFileName.compareTo(name) > 0;
-        }
-
     }
 
     protected void doMerge() throws IOException {
@@ -171,11 +205,67 @@ public class BitcaskImpl implements Bitcask {
         }
     }
 
-    protected void removeOldFiles(File dataFile) {
+    protected void removeOldFiles(File file) {
         var dir = new File(directory);
-        var files = dir.listFiles(new myFileFilter(dataFile.getName()));
-        for (var file : files) {
-            file.delete();
+        var files = dir.listFiles(new olderFileFilter(file.getName()));
+        for (var f : files) {
+            f.delete();
+        }
+    }
+
+    protected void start() throws IOException {
+        var dir = new File(directory);
+        if (!dir.exists())
+            return;
+
+        File[] hintFiles = dir.listFiles(new HintFilter());
+        File[] dataFiles = null;
+
+        if (hintFiles.length > 1)
+            throw new RuntimeException("More than one hint file!");
+        if (hintFiles.length == 1) {
+            var hintFile = hintFiles[0];
+            removeOldFiles(hintFile);
+            loadFromHintFile(hintFile);
+            dataFiles = dir.listFiles(new newerFileFilter(hintFile.getName()));
+        }
+
+        if (dataFiles == null)
+            dataFiles = dir.listFiles(new DataFilter());
+        loadFromDataFiles(dataFiles);
+    }
+
+    protected void loadFromHintFile(File hinFile) throws IOException {
+        String dataFilePath = hinFile.getAbsolutePath().replace(".hint", ".data");
+        var inputStream = new BufferedInputStream(new FileInputStream(hinFile));
+
+        while(inputStream.available() > 0) {
+            var pair = RecordConverter.readNextRecordHint(inputStream);
+            pair.getValue().setFilePath(dataFilePath);
+            keydir.put(pair.getKey(), pair.getValue());
+        }
+
+        inputStream.close();
+    }
+
+    protected void loadFromDataFiles(File[] dataFiles) throws IOException {
+        if (dataFiles == null || dataFiles.length <= 0)
+            return;
+        
+        Arrays.sort(dataFiles);
+        
+        for (var file: dataFiles) {
+            var inputStream = new BufferedInputStream(new FileInputStream(file));
+            long offset = 0;
+            while(inputStream.available() > 0) {
+                var pair = RecordConverter.readNextRecordData(inputStream);
+                var recordRef = pair.getValue();
+                recordRef.setFilePath(file.getAbsolutePath());
+                recordRef.setOffset(offset);
+                offset += recordRef.getRecordLength();
+                keydir.put(pair.getKey(), pair.getValue());
+            }
+            inputStream.close();
         }
     }
 

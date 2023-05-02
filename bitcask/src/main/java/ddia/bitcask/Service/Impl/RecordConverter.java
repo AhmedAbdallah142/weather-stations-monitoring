@@ -1,9 +1,12 @@
 package ddia.bitcask.Service.Impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
 import ddia.bitcask.model.Key;
+import ddia.bitcask.model.RecordRef;
 
 public class RecordConverter {
 
@@ -48,6 +51,52 @@ public class RecordConverter {
                 .put(key.getBytes());
 
         return buffer.array();
+    }
+
+    public static Map.Entry<Key, RecordRef> readNextRecordHint(InputStream hintFilStream) throws IOException {
+        // record: keySize|recordSize|offset|key
+        var recordFixedSize = keySizeBytes + valueSizeBytes + offestSizeBytes;
+
+        var recordHead = hintFilStream.readNBytes(recordFixedSize);
+        if(recordHead.length < recordFixedSize)
+            throw new RuntimeException("Failed to read the record");
+
+        ByteBuffer buffer = ByteBuffer.wrap(recordHead);
+
+        int ksz = buffer.getShort() & 0xffff;
+        int rsz = buffer.getInt();
+        long offset = buffer.getLong();
+
+        byte[] keyBytes = hintFilStream.readNBytes(ksz);
+        if(keyBytes.length < ksz)
+            throw new RuntimeException("Failed to read the record");
+
+        var recordRef = RecordRef.builder().offset(offset).recordLength(rsz).build();
+        return Map.entry(new Key(keyBytes), recordRef);
+    }
+
+    public static Map.Entry<Key, RecordRef> readNextRecordData(InputStream dataFilStream) throws IOException {
+        // record: keySize|valueSize|key|value
+        var recordFixedSize = keySizeBytes + valueSizeBytes;
+
+        var recordHead = dataFilStream.readNBytes(recordFixedSize);
+        if(recordHead.length < recordFixedSize)
+            throw new RuntimeException("Failed to read the record");
+
+        ByteBuffer buffer = ByteBuffer.wrap(recordHead);
+
+        int ksz = buffer.getShort() & 0xffff;
+        int vsz = buffer.getInt();
+
+        byte[] keyBytes = dataFilStream.readNBytes(ksz);
+        if(keyBytes.length < ksz)
+            throw new RuntimeException("Failed to read the record");
+        byte[] valueBytes = dataFilStream.readNBytes(vsz);
+        if(valueBytes.length < vsz)
+            throw new RuntimeException("Failed to read the record");
+
+        var recordRef = RecordRef.builder().recordLength(recordFixedSize + ksz + vsz).build();
+        return Map.entry(new Key(keyBytes), recordRef);
     }
 
 }
