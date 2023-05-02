@@ -60,7 +60,7 @@ public class WeatherStation {
         }
     }
 
-    private static String selectBatteryStatus(Random random) {
+    static String selectBatteryStatus(Random random) {
         double p = random.nextDouble();
         double cumulativeProbability = 0.0;
         for (int i = 0; i < BATTERY_STATUS_OPTIONS.length; i++) {
