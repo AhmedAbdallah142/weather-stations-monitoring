@@ -33,6 +33,7 @@ public class ParquetFileWriter {
                 .withCompressionCodec(SNAPPY)
                 .withWriteMode(Mode.CREATE)
                 .build()) {
+            System.out.printf("start writing %d messages into %s ...%n", messages.size(), path);
             for (StationStatusMessage message : messages) {
                 writer.write(message);
             }

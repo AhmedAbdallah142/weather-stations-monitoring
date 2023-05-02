@@ -28,12 +28,12 @@ public class InMemoryArchive {
     }
 
     private void processAndWriteBatch() throws IOException {
-        Map<Long, Map<String, List<StationStatusMessage>>> map = cachedData.stream().collect(Collectors.groupingBy(StationStatusMessage::getStationId, Collectors.groupingBy(StationStatusMessage::getStatusDayDate)));
-        for (Long stationId : map.keySet()) {
-            Map<String, List<StationStatusMessage>> dayDateMap = map.get(stationId);
-            for (String dayDate : dayDateMap.keySet()) {
-                String partitionPath = String.format("%s/%d/%s", directoryPath, stationId, dayDate);
-                ParquetFileWriter.writeListToParquetFile(dayDateMap.get(dayDate), partitionPath);
+        Map<String, Map<Long, List<StationStatusMessage>>> map = cachedData.stream().collect(Collectors.groupingBy(StationStatusMessage::getStatusDayDate, Collectors.groupingBy(StationStatusMessage::getStationId)));
+        for (String dayDate : map.keySet()) {
+            Map<Long, List<StationStatusMessage>> stationIdMap = map.get(dayDate);
+            for (Long stationId : stationIdMap.keySet()) {
+                String partitionPath = String.format("%s/%s/%d", directoryPath, dayDate, stationId);
+                ParquetFileWriter.writeListToParquetFile(stationIdMap.get(stationId), partitionPath);
             }
         }
 
