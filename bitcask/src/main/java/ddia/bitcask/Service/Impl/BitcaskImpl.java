@@ -84,65 +84,9 @@ public class BitcaskImpl implements Bitcask {
         thread.start();
     }
 
-    private class olderFileFilter implements FilenameFilter {
-        String fileName;
-
-        olderFileFilter(String fileName) {
-            this.fileName = fileName.substring(0, fileName.lastIndexOf("."));
-        }
-
-        @Override
-        public boolean accept(File dir, String name) {
-            int t = name.lastIndexOf(".");
-            if (t < 0)
-                return false;
-            return fileName.compareTo(name.substring(0, t)) > 0;
-        }
-    }
-
-    private class newerFileFilter implements FilenameFilter {
-        String fileName;
-
-        newerFileFilter(String fileName) {
-            this.fileName = fileName.substring(0, fileName.lastIndexOf("."));
-        }
-
-        @Override
-        public boolean accept(File dir, String name) {
-            int t = name.lastIndexOf(".");
-            if (t < 0)
-                return false;
-            return fileName.compareTo(name.substring(0, t)) < 0;
-        }
-    }
-
-    private class HintFileFilter implements FilenameFilter {
-        @Override
-        public boolean accept(File dir, String name) {
-            return name.endsWith(".hint");
-        }
-    }
-
-    private class DataFileFilter implements FilenameFilter {
-        @Override
-        public boolean accept(File dir, String name) {
-            return name.endsWith(".data");
-        }
-    }
-
     protected long extractTime(String filePath) {
         String time = new File(filePath).getName().substring(5, 5 + 19);
         return Long.valueOf(time);
-    }
-
-    private class ToUpdateRef {
-        RecordRef recordRef;
-        long offsetMerge;
-
-        ToUpdateRef(RecordRef recordRef, long offsetMerge) {
-            this.recordRef = recordRef;
-            this.offsetMerge = offsetMerge;
-        }
     }
 
     protected void doMerge() throws IOException {
@@ -291,6 +235,62 @@ public class BitcaskImpl implements Bitcask {
                 keydir.put(pair.getKey(), pair.getValue());
             }
             inputStream.close();
+        }
+    }
+
+    private class ToUpdateRef {
+        RecordRef recordRef;
+        long offsetMerge;
+
+        ToUpdateRef(RecordRef recordRef, long offsetMerge) {
+            this.recordRef = recordRef;
+            this.offsetMerge = offsetMerge;
+        }
+    }
+
+    private class olderFileFilter implements FilenameFilter {
+        String fileName;
+
+        olderFileFilter(String fileName) {
+            this.fileName = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+
+        @Override
+        public boolean accept(File dir, String name) {
+            int t = name.lastIndexOf(".");
+            if (t < 0)
+                return false;
+            return fileName.compareTo(name.substring(0, t)) > 0;
+        }
+    }
+
+    private class newerFileFilter implements FilenameFilter {
+        String fileName;
+
+        newerFileFilter(String fileName) {
+            this.fileName = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+
+        @Override
+        public boolean accept(File dir, String name) {
+            int t = name.lastIndexOf(".");
+            if (t < 0)
+                return false;
+            return fileName.compareTo(name.substring(0, t)) < 0;
+        }
+    }
+
+    private class HintFileFilter implements FilenameFilter {
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.endsWith(".hint");
+        }
+    }
+
+    private class DataFileFilter implements FilenameFilter {
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.endsWith(".data");
         }
     }
 
