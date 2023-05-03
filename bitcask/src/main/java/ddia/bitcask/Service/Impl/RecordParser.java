@@ -58,8 +58,9 @@ public class RecordParser {
         var recordFixedSize = keySizeBytes + valueSizeBytes + offestSizeBytes;
 
         var recordHead = hintFilStream.readNBytes(recordFixedSize);
-        if (recordHead.length < recordFixedSize)
-            throw new RuntimeException("Failed to read the record");
+        if (recordHead.length < recordFixedSize) {
+            return null;
+        }
 
         ByteBuffer buffer = ByteBuffer.wrap(recordHead);
 
@@ -68,8 +69,9 @@ public class RecordParser {
         long offset = buffer.getLong();
 
         byte[] keyBytes = hintFilStream.readNBytes(ksz);
-        if (keyBytes.length < ksz)
-            throw new RuntimeException("Failed to read the record");
+        if (keyBytes.length < ksz) {
+            return null;
+        }
 
         var recordRef = RecordRef.builder().offset(offset).recordLength(rsz).build();
         return Map.entry(new Key(keyBytes), recordRef);
@@ -80,8 +82,9 @@ public class RecordParser {
         var recordFixedSize = keySizeBytes + valueSizeBytes;
 
         var recordHead = dataFilStream.readNBytes(recordFixedSize);
-        if (recordHead.length < recordFixedSize)
-            throw new RuntimeException("Failed to read the record");
+        if (recordHead.length < recordFixedSize) {
+            return null;
+        }
 
         ByteBuffer buffer = ByteBuffer.wrap(recordHead);
 
@@ -89,11 +92,14 @@ public class RecordParser {
         int vsz = buffer.getInt();
 
         byte[] keyBytes = dataFilStream.readNBytes(ksz);
-        if (keyBytes.length < ksz)
-            throw new RuntimeException("Failed to read the record");
+        if (keyBytes.length < ksz) {
+            return null;
+        }
+
         byte[] valueBytes = dataFilStream.readNBytes(vsz);
-        if (valueBytes.length < vsz)
-            throw new RuntimeException("Failed to read the record");
+        if (valueBytes.length < vsz) {
+            return null;
+        }
 
         var recordRef = RecordRef.builder().recordLength(recordFixedSize + ksz + vsz).build();
         return Map.entry(new Key(keyBytes), recordRef);

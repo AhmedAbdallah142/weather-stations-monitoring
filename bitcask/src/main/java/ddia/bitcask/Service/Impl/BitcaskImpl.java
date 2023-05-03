@@ -13,11 +13,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ddia.bitcask.service.Bitcask;
 import ddia.bitcask.model.Key;
 import ddia.bitcask.model.RecordRef;
 
 public class BitcaskImpl implements Bitcask {
+
+    private Logger logger = LoggerFactory.getLogger(BitcaskImpl.class);
 
     public final String directory;
     private final Map<Key, RecordRef> keydir;
@@ -36,6 +41,9 @@ public class BitcaskImpl implements Bitcask {
     @Override
     public byte[] get(byte[] keyBytes) throws IOException {
         var key = new Key(keyBytes);
+        var recordRef = keydir.get(key);
+        if(recordRef == null)
+            return null;
         var record = fileManager.getRecord(keydir.get(key));
         return RecordParser.toKeyValuePair(record).getValue();
     }
@@ -62,11 +70,15 @@ public class BitcaskImpl implements Bitcask {
             return;
         mergeRunning = true;
         Thread thread = new Thread(() -> {
+            long start = System.currentTimeMillis();
+            logger.info("Merge operation started");
             try {
                 doMerge();
             } catch (IOException e) {
-                throw new RuntimeException("Merge failed", e);
+                logger.error("Merge Failed", e);
             }
+            logger.info(String.format("Merge operation finished in total time of %d ms",
+                    System.currentTimeMillis() - start));
             mergeRunning = false;
         });
         thread.start();
@@ -104,14 +116,14 @@ public class BitcaskImpl implements Bitcask {
         }
     }
 
-    private class HintFilter implements FilenameFilter {
+    private class HintFileFilter implements FilenameFilter {
         @Override
         public boolean accept(File dir, String name) {
             return name.endsWith(".hint");
         }
     }
 
-    private class DataFilter implements FilenameFilter {
+    private class DataFileFilter implements FilenameFilter {
         @Override
         public boolean accept(File dir, String name) {
             return name.endsWith(".data");
@@ -143,7 +155,8 @@ public class BitcaskImpl implements Bitcask {
 
         var updateMap = mergeFiles(activePath, dataFile, hintFile);
 
-        if (!moveFiles(dataFile, hintFile))
+        dataFile = moveFiles(dataFile, hintFile);
+        if (dataFile == null)
             return;
 
         updateKeydir(updateMap, dataFile);
@@ -177,17 +190,19 @@ public class BitcaskImpl implements Bitcask {
         return updateMap;
     }
 
-    // return false if dataFile is empty
-    protected boolean moveFiles(File dataFile, File hintFile) {
+    protected File moveFiles(File dataFile, File hintFile) {
         if (dataFile.length() <= 0) {
             dataFile.delete();
             hintFile.delete();
-            return false;
+            return null;
         }
 
-        dataFile.renameTo(new File(String.format("%s/%s", directory, dataFile.getName())));
-        hintFile.renameTo(new File(String.format("%s/%s", directory, hintFile.getName())));
-        return true;
+        var newDataFile = new File(String.format("%s/%s", directory, dataFile.getName()));
+        var newHintFile = new File(String.format("%s/%s", directory, hintFile.getName()));
+
+        dataFile.renameTo(newDataFile);
+        hintFile.renameTo(newHintFile);
+        return newDataFile;
     }
 
     protected void updateKeydir(Map<Key, ToUpdateRef> updateMap, File dataFile) {
@@ -220,7 +235,7 @@ public class BitcaskImpl implements Bitcask {
         if (!dir.exists())
             return;
 
-        File[] hintFiles = dir.listFiles(new HintFilter());
+        File[] hintFiles = dir.listFiles(new HintFileFilter());
         File[] dataFiles = null;
 
         if (hintFiles.length > 1)
@@ -233,7 +248,7 @@ public class BitcaskImpl implements Bitcask {
         }
 
         if (dataFiles == null)
-            dataFiles = dir.listFiles(new DataFilter());
+            dataFiles = dir.listFiles(new DataFileFilter());
         loadFromDataFiles(dataFiles);
     }
 
@@ -243,6 +258,10 @@ public class BitcaskImpl implements Bitcask {
 
         while (inputStream.available() > 0) {
             var pair = RecordParser.readNextRecordHint(inputStream);
+            if (pair == null) {
+                logger.error("Failed to read record from hint file");
+                break;
+            }
             pair.getValue().setFilePath(dataFilePath);
             keydir.put(pair.getKey(), pair.getValue());
         }
@@ -261,6 +280,10 @@ public class BitcaskImpl implements Bitcask {
             long offset = 0;
             while (inputStream.available() > 0) {
                 var pair = RecordParser.readNextRecordData(inputStream);
+                if (pair == null) {
+                    logger.error("Failed to read record from data file");
+                    break;
+                }
                 var recordRef = pair.getValue();
                 recordRef.setFilePath(file.getAbsolutePath());
                 recordRef.setOffset(offset);
