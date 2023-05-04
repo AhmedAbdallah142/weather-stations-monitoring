@@ -5,7 +5,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,14 +26,12 @@ public class BitcaskImpl implements Bitcask {
     public final String directory;
     private final Map<Key, RecordRef> keydir;
     private final FileWriter fileWriter;
-    private final FileReader fileManager;
     private boolean mergeRunning = false;
 
-    public BitcaskImpl(String directory) throws IOException {
+    public BitcaskImpl(String directory, long dataFileSizeThreshold) throws IOException {
         this.directory = directory;
         this.keydir = new ConcurrentHashMap<Key, RecordRef>();
-        this.fileWriter = new FileWriter(directory);
-        this.fileManager = new FileReader();
+        this.fileWriter = new FileWriter(directory, dataFileSizeThreshold);
         start();
     }
 
@@ -42,9 +39,9 @@ public class BitcaskImpl implements Bitcask {
     public byte[] get(byte[] keyBytes) throws IOException {
         var key = new Key(keyBytes);
         var recordRef = keydir.get(key);
-        if(recordRef == null)
+        if (recordRef == null)
             return null;
-        var record = fileManager.getRecord(keydir.get(key));
+        var record = FileUtils.getRecord(keydir.get(key));
         return RecordParser.toKeyValuePair(record).getValue();
     }
 
@@ -84,27 +81,24 @@ public class BitcaskImpl implements Bitcask {
         thread.start();
     }
 
-    protected long extractTime(String filePath) {
-        String time = new File(filePath).getName().substring(5, 5 + 19);
-        return Long.valueOf(time);
-    }
-
     protected void doMerge() throws IOException {
-        String activePath = fileWriter.getActiveFile().getAbsolutePath();
-        String dataFilePath = String.format("%s/temp/data-%019d.data", directory, extractTime(activePath) - 1);
+        File activeFile = fileWriter.getActiveFile();
+        fileWriter.addToFileTime(activeFile.getName(), -1);
+        String dataFilePath = String.format("%s/temp/%s", directory,
+                fileWriter.addToFileTime(activeFile.getName(), -1));
         String hintFilePath = dataFilePath.replace(".data", ".hint");
 
         var dataFile = new File(dataFilePath);
         var hintFile = new File(hintFilePath);
 
-        var updateMap = mergeFiles(activePath, dataFile, hintFile);
+        var updateMap = mergeFiles(activeFile.getAbsolutePath(), dataFile, hintFile);
 
         dataFile = moveFiles(dataFile, hintFile);
         if (dataFile == null)
             return;
 
         updateKeydir(updateMap, dataFile);
-        removeOldFiles(dataFile);
+        FileUtils.removeOldFiles(dataFile);
     }
 
     protected Map<Key, ToUpdateRef> mergeFiles(String activePath, File dataFile, File hintFile) throws IOException {
@@ -121,7 +115,7 @@ public class BitcaskImpl implements Bitcask {
             var key = entry.getKey();
             var recordRef = entry.getValue();
             if (activePath.compareTo(recordRef.getFilePath()) > 0) {
-                var record = fileManager.getRecord(recordRef);
+                var record = FileUtils.getRecord(recordRef);
                 dataFileWriter.write(record);
                 hintFileWriter.write(RecordParser.toHintRecord(key, record.length, offset));
                 updateMap.put(key, new ToUpdateRef(recordRef, offset));
@@ -166,33 +160,25 @@ public class BitcaskImpl implements Bitcask {
         }
     }
 
-    protected void removeOldFiles(File file) {
-        var dir = new File(directory);
-        var files = dir.listFiles(new olderFileFilter(file.getName()));
-        for (var f : files) {
-            f.delete();
-        }
-    }
-
     protected void start() throws IOException {
         var dir = new File(directory);
         if (!dir.exists())
             return;
 
-        File[] hintFiles = dir.listFiles(new HintFileFilter());
+        File[] hintFiles = FileUtils.getHintFiles(dir);
         File[] dataFiles = null;
 
         if (hintFiles.length > 1)
             throw new RuntimeException("More than one hint file!");
         if (hintFiles.length == 1) {
             var hintFile = hintFiles[0];
-            removeOldFiles(hintFile);
+            FileUtils.removeOldFiles(hintFile);
             loadFromHintFile(hintFile);
-            dataFiles = dir.listFiles(new newerFileFilter(hintFile.getName()));
+            dataFiles = FileUtils.getNewerFiles(hintFile);
         }
 
         if (dataFiles == null)
-            dataFiles = dir.listFiles(new DataFileFilter());
+            dataFiles = FileUtils.getDataFiles(dir);
         loadFromDataFiles(dataFiles);
     }
 
@@ -245,52 +231,6 @@ public class BitcaskImpl implements Bitcask {
         ToUpdateRef(RecordRef recordRef, long offsetMerge) {
             this.recordRef = recordRef;
             this.offsetMerge = offsetMerge;
-        }
-    }
-
-    private class olderFileFilter implements FilenameFilter {
-        String fileName;
-
-        olderFileFilter(String fileName) {
-            this.fileName = fileName.substring(0, fileName.lastIndexOf("."));
-        }
-
-        @Override
-        public boolean accept(File dir, String name) {
-            int t = name.lastIndexOf(".");
-            if (t < 0)
-                return false;
-            return fileName.compareTo(name.substring(0, t)) > 0;
-        }
-    }
-
-    private class newerFileFilter implements FilenameFilter {
-        String fileName;
-
-        newerFileFilter(String fileName) {
-            this.fileName = fileName.substring(0, fileName.lastIndexOf("."));
-        }
-
-        @Override
-        public boolean accept(File dir, String name) {
-            int t = name.lastIndexOf(".");
-            if (t < 0)
-                return false;
-            return fileName.compareTo(name.substring(0, t)) < 0;
-        }
-    }
-
-    private class HintFileFilter implements FilenameFilter {
-        @Override
-        public boolean accept(File dir, String name) {
-            return name.endsWith(".hint");
-        }
-    }
-
-    private class DataFileFilter implements FilenameFilter {
-        @Override
-        public boolean accept(File dir, String name) {
-            return name.endsWith(".data");
         }
     }
 

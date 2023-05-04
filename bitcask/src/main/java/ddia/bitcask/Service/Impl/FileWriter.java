@@ -13,22 +13,32 @@ public class FileWriter {
     private FileOutputStream fileStream;
     private long fileSize;
 
-    private final long sizeThreshold = 64 * 1024 * 1024;
+    private final long sizeThreshold;
 
-    public FileWriter(String directory) {
+    public FileWriter(String directory, long sizeThreshold) {
+        if (sizeThreshold < 1)
+            throw new RuntimeException("File size threshold must be positive number");
+
         this.directory = directory;
+        this.sizeThreshold = sizeThreshold;
+    }
+
+    public String addToFileTime(String fileName, int timeToAdd) {
+        String time = fileName.substring(5, 5 + 19);
+        long newFileTime = Long.valueOf(time) + timeToAdd;
+        return String.format("data-%019d.data", newFileTime);
     }
 
     public void createNewFile() throws IOException {
         if (fileStream != null)
             fileStream.close();
 
-        file = new File(String.format("%s/data-%019d.data", directory, System.currentTimeMillis()));
+        file = new File(String.format("%s/data-%017d00.data", directory, System.currentTimeMillis()));
         file.getParentFile().mkdirs();
-        boolean created = file.createNewFile();
 
-        if (!created)
-            throw new RuntimeException("File already exists");
+        if (file.exists())
+            file = new File(String.format("%s/%s", directory, addToFileTime(file.getName(), 1)));
+        file.createNewFile();
 
         fileStream = new FileOutputStream(file, true);
         fileSize = 0;
@@ -62,7 +72,8 @@ public class FileWriter {
     }
 
     public void closeOpenedFile() throws IOException {
-        fileStream.close();
+        if (fileStream != null)
+            fileStream.close();
         file = null;
     }
 }
