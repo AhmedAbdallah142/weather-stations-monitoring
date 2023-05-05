@@ -23,8 +23,9 @@ public class FileUtils {
         return record;
     }
 
-    public static void removeOldFiles(File file) {
+    public static void removeOlderFiles(File file) {
         var files = file.getParentFile().listFiles(new olderFileFilter(file.getName()));
+        if (files == null) return;
         for (var f : files) {
             f.delete();
         }
@@ -35,11 +36,11 @@ public class FileUtils {
     }
 
     public static File[] getDataFiles(File dir) {
-        return dir.listFiles(new FileUtils.DataFileFilter());
+        return dir.listFiles(new DataFileFilter());
     }
 
     public static File[] getHintFiles(File dir) {
-        return dir.listFiles(new FileUtils.HintFileFilter());
+        return dir.listFiles(new HintFileFilter());
     }
 
     private static class olderFileFilter implements FilenameFilter {

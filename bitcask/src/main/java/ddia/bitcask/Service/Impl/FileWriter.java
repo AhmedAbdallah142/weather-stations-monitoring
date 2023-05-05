@@ -25,7 +25,7 @@ public class FileWriter {
 
     public String addToFileTime(String fileName, int timeToAdd) {
         String time = fileName.substring(5, 5 + 19);
-        long newFileTime = Long.valueOf(time) + timeToAdd;
+        long newFileTime = Long.parseLong(time) + timeToAdd;
         return String.format("data-%019d.data", newFileTime);
     }
 

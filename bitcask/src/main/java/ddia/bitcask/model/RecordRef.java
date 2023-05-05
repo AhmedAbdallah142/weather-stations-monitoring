@@ -23,18 +23,20 @@ public class RecordRef {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof RecordRef))
-            return false;
-        
-        RecordRef other = (RecordRef) obj;
-        if(filePath == null)
-            if(other.filePath != null)
-                return false;
-        else if(!filePath.equals(other.filePath))
-            return false;
+        if (this == obj) return true;
 
-        return offset == other.offset && recordLength == other.recordLength;
+        if (obj instanceof RecordRef other) {
+            return Objects.equals(this.filePath, other.filePath)
+                    && offset == other.offset
+                    && recordLength == other.recordLength;
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        RecordRef r1 = RecordRef.builder().filePath(null).build();
+        RecordRef r2 = RecordRef.builder().filePath(null).build();
+
+        System.out.println(r1.equals(r2));
     }
 }

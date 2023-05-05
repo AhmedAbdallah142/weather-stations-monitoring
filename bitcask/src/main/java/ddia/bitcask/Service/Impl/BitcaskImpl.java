@@ -21,16 +21,16 @@ import ddia.bitcask.model.RecordRef;
 
 public class BitcaskImpl implements Bitcask {
 
-    private Logger logger = LoggerFactory.getLogger(BitcaskImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(BitcaskImpl.class);
 
     public final String directory;
-    private final Map<Key, RecordRef> keydir;
+    private final Map<Key, RecordRef> keyDir;
     private final FileWriter fileWriter;
     private boolean mergeRunning = false;
 
     public BitcaskImpl(String directory, long dataFileSizeThreshold) throws IOException {
         this.directory = directory;
-        this.keydir = new ConcurrentHashMap<Key, RecordRef>();
+        this.keyDir = new ConcurrentHashMap<>();
         this.fileWriter = new FileWriter(directory, dataFileSizeThreshold);
         start();
     }
@@ -38,10 +38,10 @@ public class BitcaskImpl implements Bitcask {
     @Override
     public byte[] get(byte[] keyBytes) throws IOException {
         var key = new Key(keyBytes);
-        var recordRef = keydir.get(key);
+        var recordRef = keyDir.get(key);
         if (recordRef == null)
             return null;
-        var record = FileUtils.getRecord(keydir.get(key));
+        var record = FileUtils.getRecord(keyDir.get(key));
         return RecordParser.toKeyValuePair(record).getValue();
     }
 
@@ -49,12 +49,12 @@ public class BitcaskImpl implements Bitcask {
     public void put(byte[] keyBytes, byte[] value) throws IOException {
         var key = new Key(keyBytes);
         var recordRef = fileWriter.append(RecordParser.toRecord(key, value));
-        keydir.put(key, recordRef);
+        keyDir.put(key, recordRef);
     }
 
     @Override
     public List<byte[]> listKeys() {
-        return keydir.keySet().stream().map(e -> e.getBytes()).toList();
+        return keyDir.keySet().stream().map(Key::getBytes).toList();
     }
 
     @Override
@@ -97,8 +97,8 @@ public class BitcaskImpl implements Bitcask {
         if (dataFile == null)
             return;
 
-        updateKeydir(updateMap, dataFile);
-        FileUtils.removeOldFiles(dataFile);
+        updateKeyDir(updateMap, dataFile);
+        FileUtils.removeOlderFiles(dataFile);
     }
 
     protected Map<Key, ToUpdateRef> mergeFiles(String activePath, File dataFile, File hintFile) throws IOException {
@@ -111,7 +111,7 @@ public class BitcaskImpl implements Bitcask {
         var updateMap = new HashMap<Key, ToUpdateRef>();
         long offset = 0;
 
-        for (var entry : keydir.entrySet()) {
+        for (var entry : keyDir.entrySet()) {
             var key = entry.getKey();
             var recordRef = entry.getValue();
             if (activePath.compareTo(recordRef.getFilePath()) > 0) {
@@ -143,7 +143,7 @@ public class BitcaskImpl implements Bitcask {
         return newDataFile;
     }
 
-    protected void updateKeydir(Map<Key, ToUpdateRef> updateMap, File dataFile) {
+    protected void updateKeyDir(Map<Key, ToUpdateRef> updateMap, File dataFile) {
         String dataFilePath = dataFile.getAbsolutePath();
 
         for (var entry : updateMap.entrySet()) {
@@ -156,7 +156,7 @@ public class BitcaskImpl implements Bitcask {
                     .recordLength(val.recordRef.getRecordLength())
                     .build();
 
-            keydir.replace(key, val.recordRef, recordRefMerge);
+            keyDir.replace(key, val.recordRef, recordRefMerge);
         }
     }
 
@@ -172,7 +172,7 @@ public class BitcaskImpl implements Bitcask {
             throw new RuntimeException("More than one hint file!");
         if (hintFiles.length == 1) {
             var hintFile = hintFiles[0];
-            FileUtils.removeOldFiles(hintFile);
+            FileUtils.removeOlderFiles(hintFile);
             loadFromHintFile(hintFile);
             dataFiles = FileUtils.getNewerFiles(hintFile);
         }
@@ -193,14 +193,14 @@ public class BitcaskImpl implements Bitcask {
                 break;
             }
             pair.getValue().setFilePath(dataFilePath);
-            keydir.put(pair.getKey(), pair.getValue());
+            keyDir.put(pair.getKey(), pair.getValue());
         }
 
         inputStream.close();
     }
 
     protected void loadFromDataFiles(File[] dataFiles) throws IOException {
-        if (dataFiles == null || dataFiles.length <= 0)
+        if (dataFiles == null || dataFiles.length == 0)
             return;
 
         Arrays.sort(dataFiles);
@@ -218,13 +218,13 @@ public class BitcaskImpl implements Bitcask {
                 recordRef.setFilePath(file.getAbsolutePath());
                 recordRef.setOffset(offset);
                 offset += recordRef.getRecordLength();
-                keydir.put(pair.getKey(), pair.getValue());
+                keyDir.put(pair.getKey(), pair.getValue());
             }
             inputStream.close();
         }
     }
 
-    private class ToUpdateRef {
+    private static class ToUpdateRef {
         RecordRef recordRef;
         long offsetMerge;
 

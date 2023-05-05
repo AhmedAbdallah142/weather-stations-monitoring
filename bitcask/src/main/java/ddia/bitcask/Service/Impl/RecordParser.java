@@ -15,10 +15,10 @@ public class RecordParser {
     public static byte[] toRecord(Key key, byte[] value) {
         // record: keySize|valueSize|key|value
 
-        final int size = keySizeBytes + valueSizeBytes + key.getBytes().length + value.length;
+        final int size = keySizeBytes + valueSizeBytes + key.length() + value.length;
         ByteBuffer buffer = ByteBuffer.allocate(size);
 
-        buffer.putShort((short) key.getBytes().length)
+        buffer.putShort((short) key.length())
                 .putInt(value.length)
                 .put(key.getBytes())
                 .put(value);
@@ -42,10 +42,10 @@ public class RecordParser {
     public static byte[] toHintRecord(Key key, int recordSize, long offset) {
         // record: keySize|recordSize|offset|key
 
-        final int size = keySizeBytes + valueSizeBytes + offestSizeBytes + key.getBytes().length;
+        final int size = keySizeBytes + valueSizeBytes + offestSizeBytes + key.length();
         ByteBuffer buffer = ByteBuffer.allocate(size);
 
-        buffer.putShort((short) key.getBytes().length)
+        buffer.putShort((short) key.length())
                 .putInt(recordSize)
                 .putLong(offset)
                 .put(key.getBytes());

@@ -1,8 +1,6 @@
 package ddia.bitcask.service.Impl;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +16,7 @@ public class RecordParserTest {
         var record = RecordParser.toRecord(new Key(key), value);
         var pair = RecordParser.toKeyValuePair(record);
 
-        assertTrue(Arrays.equals(key, pair.getKey().getBytes()));
-        assertTrue(Arrays.equals(value, pair.getValue()));
+        assertArrayEquals(key, pair.getKey().getBytes());
+        assertArrayEquals(value, pair.getValue());
     }
 }
