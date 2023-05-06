@@ -10,8 +10,6 @@ import org.apache.parquet.hadoop.util.HadoopOutputFile;
 import org.apache.parquet.io.OutputFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.apache.parquet.hadoop.metadata.CompressionCodecName.SNAPPY;
@@ -22,8 +20,7 @@ public class ParquetFileWriter {
     private static final String PARQUET_EXTENSION = ".parquet";
 
     public static void writeListToParquetFile(List<StationStatusMessage> messages, String filePath) throws IOException {
-        String fileName = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                .replace(":", "-").concat(PARQUET_EXTENSION);
+        String fileName = System.nanoTime() + PARQUET_EXTENSION;
         Path path = new Path(filePath, fileName);
         OutputFile outputFile = HadoopOutputFile.fromPath(path, new Configuration());
         try (ParquetWriter<StationStatusMessage> writer = AvroParquetWriter.<StationStatusMessage>builder(outputFile)
