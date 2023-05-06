@@ -28,10 +28,17 @@ public class BitcaskImpl implements Bitcask {
     private final FileWriter fileWriter;
     private boolean mergeRunning = false;
 
-    public BitcaskImpl(String directory, long dataFileSizeThreshold) throws IOException {
+    public BitcaskImpl(String directory) throws IOException {
         this.directory = directory;
         this.keyDir = new ConcurrentHashMap<>();
-        this.fileWriter = new FileWriter(directory, dataFileSizeThreshold);
+        this.fileWriter = new FileWriter(directory, 64 * 1024 * 1024);
+        start();
+    }
+
+    public BitcaskImpl(String directory, long sizeThresholdBytes) throws IOException {
+        this.directory = directory;
+        this.keyDir = new ConcurrentHashMap<>();
+        this.fileWriter = new FileWriter(directory, sizeThresholdBytes);
         start();
     }
 

@@ -13,14 +13,14 @@ public class FileWriter {
     private FileOutputStream fileStream;
     private long fileSize;
 
-    private final long sizeThreshold;
+    private final long sizeThresholdBytes;
 
-    public FileWriter(String directory, long sizeThreshold) {
-        if (sizeThreshold < 1)
+    public FileWriter(String directory, long sizeThresholdBytes) {
+        if (sizeThresholdBytes < 1)
             throw new RuntimeException("File size threshold must be positive number");
 
         this.directory = directory;
-        this.sizeThreshold = sizeThreshold;
+        this.sizeThresholdBytes = sizeThresholdBytes;
     }
 
     public String addToFileTime(String fileName, int timeToAdd) {
@@ -55,7 +55,7 @@ public class FileWriter {
         fileStream.flush();
         fileSize += record.length;
 
-        if (fileSize > sizeThreshold) {
+        if (fileSize > sizeThresholdBytes) {
             closeOpenedFile();
             createNewFile();
         }
