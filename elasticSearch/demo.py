@@ -10,8 +10,8 @@ parquet_dir = "parquet_files"
 timeStamp = 0
 
 for file in os.listdir(parquet_dir):
-    filename = datetime.datetime.strptime(os.path.basename(file)[:-len(".parquet")], '%Y-%m-%dT%H-%M-%S.%f')
-    file_timestamp = filename.timestamp()
+    filename = os.path.basename(file)[:-len(".parquet")]
+    file_timestamp = int(filename)
     if file.endswith(".parquet") and file_timestamp > timeStamp:
         df = pd.read_parquet(os.path.join(parquet_dir, file))
         #
