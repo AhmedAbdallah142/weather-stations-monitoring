@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class ReceivedMessageHandler {
     private static final int BATCH_SIZE = 10000;
-    private static final String ARCHIVE_DIRECTORY = "src/main/java/ddia/centralStation";
+    private static final String ARCHIVE_DIRECTORY = "archive/";
     InMemoryArchive archive;
 
     public ReceivedMessageHandler() {

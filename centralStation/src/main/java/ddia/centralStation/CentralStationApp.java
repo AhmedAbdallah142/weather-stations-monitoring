@@ -2,12 +2,15 @@ package ddia.centralStation;
 
 import ddia.centralStation.messageReciever.KafkaMessageConsumer;
 
+import java.util.Optional;
+
 public class CentralStationApp {
-    private static final String KAFKA_BOOTSTRAP_SERVER = "localhost:9092";
     private static final String KAFKA_TOPIC_NAME = "stations-status";
 
     public static void main(String[] args) {
-        KafkaMessageConsumer.startConsuming(KAFKA_BOOTSTRAP_SERVER, KAFKA_TOPIC_NAME);
+        String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost:9092");
+
+        KafkaMessageConsumer.startConsuming(kafka, KAFKA_TOPIC_NAME);
         //TODO: remove the commented code
 //        String message = "{ \"station_id\": 1, \"s_no\": 2, \"battery_status\": \"low\", " +
 //                "\"status_timestamp\": 18010021, \"weather\": { \"humidity\": 30, " +
