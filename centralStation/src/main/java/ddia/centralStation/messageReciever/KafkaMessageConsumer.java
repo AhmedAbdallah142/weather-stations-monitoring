@@ -16,6 +16,7 @@ public class KafkaMessageConsumer {
         props.put("bootstrap.servers", kafkaServer);
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("group.id", "central-station-group");
         ReceivedMessageHandler messageHandler = new ReceivedMessageHandler();
         try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
             consumer.subscribe(Collections.singletonList(topicName));

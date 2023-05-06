@@ -1,4 +1,4 @@
-package ddia.bitcask.Service.Impl;
+package ddia.bitcask.service.Impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
