@@ -13,7 +13,7 @@ public class WeatherStation {
     private static final String[] BATTERY_STATUS_OPTIONS = {"low", "medium", "high"};
     private static final double[] BATTERY_STATUS_PROBABILITIES = {0.3, 0.4, 0.3};
     private static final double DROP_RATE = 0.1;
-    private static final String topicName = "stations-status";
+    private static final String topicName = "stations-statusProcessors";
     private static long sNo = 1;
 
     public static void main(String[] args) throws InterruptedException {
