@@ -11,7 +11,7 @@ import java.util.Properties;
 
 import static ddia.WeatherStationOpenMeteo.jsonToMap;
 
-public class RainingProcessor {
+public class RainingStream {
     public static void main(String[] args) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kafka-processor");
