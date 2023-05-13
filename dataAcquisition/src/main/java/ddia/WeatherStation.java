@@ -15,7 +15,7 @@ public class WeatherStation {
     private static long sNo = 1;
 
     public static void main(String[] args) {
-        int STATION_ID = 1;
+        int STATION_ID = Integer.parseInt(args[0]);
         String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost:9092");
 
         Properties properties = new Properties();
@@ -32,7 +32,7 @@ public class WeatherStation {
             public void run() {
                 // Generate the weather status message
                 String batteryStatus = selectBatteryStatus(random);
-                long statusTimestamp = System.currentTimeMillis() / 1000L;
+                long statusTimestamp = System.currentTimeMillis();
                 int humidity = random.nextInt(101);
                 int temperature = random.nextInt(201) - 50;
                 int windSpeed = random.nextInt(101);
