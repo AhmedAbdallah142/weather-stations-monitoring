@@ -37,7 +37,7 @@ public class WeatherStation {
                 int temperature = random.nextInt(201) - 50;
                 int windSpeed = random.nextInt(101);
                 String message = String.format(
-                        "{ \"station_id\": %d, \"s_no\": %d, \"battery_status\": \"%s\", " +
+                        "{ \"header\": Central Station,\"message\":{ \"station_id\": %d, \"s_no\": %d, \"battery_status\": \"%s\", " +
                                 "\"status_timestamp\": %d, \"weather\": { \"humidity\": %d, " +
                                 "\"temperature\": %d, \"wind_speed\": %d } }",
                         STATION_ID, sNo, batteryStatus, statusTimestamp, humidity, temperature, windSpeed);
