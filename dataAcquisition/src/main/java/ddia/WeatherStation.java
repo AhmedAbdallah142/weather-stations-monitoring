@@ -5,9 +5,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 public class WeatherStation {
     private static final String[] BATTERY_STATUS_OPTIONS = {"low", "medium", "high"};
@@ -16,8 +14,8 @@ public class WeatherStation {
     private static final String topicName = "stations-status";
     private static long sNo = 1;
 
-    public static void main(String[] args) throws InterruptedException {
-        int STATION_ID = Integer.parseInt(args[0]);
+    public static void main(String[] args) {
+        int STATION_ID = 1;
         String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost:9092");
 
         Properties properties = new Properties();
@@ -28,9 +26,10 @@ public class WeatherStation {
                 StringSerializer.class.getName());
 
         Random random = new Random();
-        try (KafkaProducer<String, String> producer = new KafkaProducer<>(properties)) {
-            //noinspection InfiniteLoopStatement
-            while (true) {
+        KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            public void run() {
                 // Generate the weather status message
                 String batteryStatus = selectBatteryStatus(random);
                 long statusTimestamp = System.currentTimeMillis() / 1000L;
@@ -54,11 +53,11 @@ public class WeatherStation {
 
                 // Increment the message counter
                 sNo++;
-
-                // Wait for one second
-                Thread.sleep(1000);
             }
-        }
+        };
+        timer.scheduleAtFixedRate(task, 0, 1000);
+
+
     }
 
     static String selectBatteryStatus(Random random) {
