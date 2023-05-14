@@ -29,3 +29,37 @@ GET weather-stations3/_search
 }
 
 ////////////////////////////////////////////////////////////////////////
+//query to get Count of dropped messages per station
+//divide(subtract(max(s_no) , count()) , count())*100
+
+{
+    "size": 0,
+    "aggs": {
+        "stations": {
+            "terms": {
+                "field": "station_id"
+            },
+            "aggs": {
+                "max_s_no": {
+                    "max": {
+                        "field": "s_no"
+                    }
+                },
+                "doc_count": {
+                    "value_count": {
+                        "field": "_id"
+                    }
+                },
+                "expression": {
+                    "bucket_script": {
+                        "buckets_path": {
+                            "max_s_no": "max_s_no",
+                            "doc_count": "doc_count"
+                        },
+                        "script": "((params.max_s_no - params.doc_count) / params.doc_count) * 100"
+                    }
+                }
+            }
+        }
+    }
+}
