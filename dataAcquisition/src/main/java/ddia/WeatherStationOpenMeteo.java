@@ -82,9 +82,9 @@ public class WeatherStationOpenMeteo {
             long statusTimestamp = Math.round(Double.parseDouble(mainMap.get("time").toString()));
             String batteryStatus = WeatherStation.selectBatteryStatus(random);
             return String.format(
-                    "{ \"station_id\": %d, \"s_no\": %d, \"battery_status\": \"%s\", " +
-                            "\"status_timestamp\": %d, \"weather\": { \"humidity\": %d, " +
-                            "\"temperature\": %d, \"wind_speed\": %d } }",
+                            "{ \"header\": Central Station,\"message\":{ \"station_id\": %d, \"s_no\": %d, \"battery_status\": \"%s\", " +
+                                    "\"status_timestamp\": %d, \"weather\": { \"humidity\": %d, " +
+                                    "\"temperature\": %d, \"wind_speed\": %d } }",
                     STATION_ID, sNo, batteryStatus, statusTimestamp, humidity, temperature, windSpeed);
         }
 }
