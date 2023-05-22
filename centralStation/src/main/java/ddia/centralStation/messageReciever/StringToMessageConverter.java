@@ -1,7 +1,7 @@
 package ddia.centralStation.messageReciever;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ddia.centralStation.models.StationStatusMessage;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 
