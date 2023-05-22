@@ -13,7 +13,7 @@ public class BitcaskSing {
         this.bitcask = new BitcaskImpl(bitcaskDir);
     }
 
-    public static Bitcask getBitcask() throws IOException {
+    public static synchronized Bitcask getBitcask() throws IOException {
         if(bitcaskSing == null)
             bitcaskSing = new BitcaskSing();
         return bitcaskSing.bitcask;

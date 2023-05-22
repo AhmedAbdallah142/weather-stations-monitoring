@@ -15,10 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/station")
-public class liveStatusService {
-    Bitcask bitcask;
+public class LiveStatusService {
+    private final Bitcask bitcask;
 
-    public liveStatusService() throws IOException {
+    public LiveStatusService() throws IOException {
         bitcask = BitcaskSing.getBitcask();
     }
 
