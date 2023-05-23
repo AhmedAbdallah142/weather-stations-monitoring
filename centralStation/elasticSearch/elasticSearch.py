@@ -1,4 +1,5 @@
 import time
+import os
 
 import pandas as pd
 from elasticsearch import Elasticsearch
@@ -13,7 +14,10 @@ timeStamp = 0
 index_name = "weather-station"
 
 # Define the Elasticsearch connection settings
-es = Elasticsearch(["http://localhost:9200"])
+elastic_search = os.environ.get('elastic_search')
+if elastic_search is None:
+    elastic_search = "localhost"
+es = Elasticsearch([f"{elastic_search}:9200"])
 
 mappings = {
     "properties": {
