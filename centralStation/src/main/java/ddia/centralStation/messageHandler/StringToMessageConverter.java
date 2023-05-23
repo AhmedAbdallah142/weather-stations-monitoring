@@ -1,4 +1,4 @@
-package ddia.centralStation.messageReciever;
+package ddia.centralStation.messageHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ddia.centralStation.models.StationStatusMessage;

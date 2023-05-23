@@ -5,6 +5,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class WeatherStation {
@@ -15,7 +16,7 @@ public class WeatherStation {
     private static long sNo = 1;
 
     public static void main(String[] args) {
-        int STATION_ID = Integer.parseInt(args[0]);
+        int STATION_ID = args.length > 0 ? Integer.parseInt(args[0]) : 1;
         String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost:9092");
 
         Properties properties = new Properties();
@@ -37,9 +38,9 @@ public class WeatherStation {
                 int temperature = random.nextInt(201) - 50;
                 int windSpeed = random.nextInt(101);
                 String message = String.format(
-                        "{ \"header\": Central Station,\"message\":{ \"station_id\": %d, \"s_no\": %d, \"battery_status\": \"%s\", " +
+                        "{\"station_id\": %d, \"s_no\": %d, \"battery_status\": \"%s\", " +
                                 "\"status_timestamp\": %d, \"weather\": { \"humidity\": %d, " +
-                                "\"temperature\": %d, \"wind_speed\": %d } }",
+                                "\"temperature\": %d, \"wind_speed\": %d }}",
                         STATION_ID, sNo, batteryStatus, statusTimestamp, humidity, temperature, windSpeed);
 
                 // Determine if the message should be dropped
@@ -47,7 +48,9 @@ public class WeatherStation {
                     System.out.println("Message dropped: " + message);
                 } else {
                     // Producer send message
-                    producer.send(new ProducerRecord<>(topicName, message));
+                    ProducerRecord<String, String> record = new ProducerRecord<>(topicName, message);
+                    record.headers().add("destination", "central station".getBytes(StandardCharsets.UTF_8));
+                    producer.send(record);
                     System.out.println("Weather status message: " + message);
                 }
 

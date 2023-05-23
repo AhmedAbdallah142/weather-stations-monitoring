@@ -1,4 +1,4 @@
-package ddia.centralStation.messageReciever;
+package ddia.centralStation.messageHandler;
 
 import ddia.bitcask.service.Bitcask;
 import ddia.centralStation.messageArchive.InMemoryArchive;
@@ -11,11 +11,14 @@ import java.nio.ByteBuffer;
 public class ReceivedMessageHandler {
     private static final int BATCH_SIZE = 10000;
     private static final String ARCHIVE_DIRECTORY = "data/archive";
+    private static final String INVALID_TOPIC_NAME = "invalid-queue";
+    KafkaMessageProducer producer;
     private final Bitcask bitcask;
     InMemoryArchive archive;
 
     public ReceivedMessageHandler() {
         archive = new InMemoryArchive(ARCHIVE_DIRECTORY, BATCH_SIZE);
+        producer = new KafkaMessageProducer(INVALID_TOPIC_NAME);
         try {
             bitcask = BitcaskSing.getBitcask();
         } catch (IOException e) {
@@ -33,7 +36,7 @@ public class ReceivedMessageHandler {
             bitcask.put(key, val);
         } catch (IOException e) {
             e.printStackTrace();
-            //TODO: Handle invalid/dead messages
+            producer.sendMessage(message);
         }
     }
 }
