@@ -1,4 +1,5 @@
 import time
+import os
 
 import pandas as pd
 from elasticsearch import Elasticsearch
@@ -7,13 +8,16 @@ from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
 spark = SparkSession.builder.appName("ParquetToES").getOrCreate()
-parquet_dir = "C:\\Users\\Kimo Store\\Desktop\\archive"
+parquet_dir = "../data/archive"
 timeStamp = 0
 
 index_name = "weather-station"
 
 # Define the Elasticsearch connection settings
-es = Elasticsearch(["http://localhost:9200"])
+elastic_search = os.environ.get('elastic_search')
+if elastic_search is None:
+    elastic_search = "localhost"
+es = Elasticsearch([f"{elastic_search}:9200"])
 
 mappings = {
     "properties": {

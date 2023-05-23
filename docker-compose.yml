@@ -1,0 +1,38 @@
+version: '3'
+services:
+  kafka:
+    image: bitnami/kafka:3.4
+    volumes:
+      - kafka_data:/bitnami
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+  
+  elasticsearch-kibana:
+    image: nshou/elasticsearch-kibana
+    ports:
+      - 9200:9200 
+      - 5601:5601
+
+  central-station:
+    image: central-station
+    ports:
+      - 8082:8082
+    volumes:
+      - central_station_data:/app/data
+    environment:
+      - kafka=kafka
+      - elastic_search=elasticsearch-kibana
+    depends_on:
+      - kafka
+      - elasticsearch-kibana
+
+  weather-station:
+    image: weather-station
+    environment:
+      - kafka=kafka
+    depends_on:
+      - kafka
+
+volumes:
+  kafka_data:
+  central_station_data:

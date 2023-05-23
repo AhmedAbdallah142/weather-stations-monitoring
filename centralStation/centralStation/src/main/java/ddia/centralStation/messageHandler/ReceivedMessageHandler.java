@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 
 public class ReceivedMessageHandler {
     private static final int BATCH_SIZE = 10000;
-    private static final String ARCHIVE_DIRECTORY = "data/archive";
+    private static final String ARCHIVE_DIRECTORY = "../data/archive";
     private static final String INVALID_TOPIC_NAME = "invalid-queue";
     KafkaMessageProducer producer;
     private final Bitcask bitcask;

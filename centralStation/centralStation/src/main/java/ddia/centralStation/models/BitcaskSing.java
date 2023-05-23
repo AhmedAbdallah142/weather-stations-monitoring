@@ -8,7 +8,7 @@ import java.io.IOException;
 public class BitcaskSing {
     private final Bitcask bitcask;
     private static BitcaskSing bitcaskSing;
-    private static final String bitcaskDir = "data/bitcask";
+    private static final String bitcaskDir = "../data/bitcask";
     private BitcaskSing() throws IOException {
         this.bitcask = new BitcaskImpl(bitcaskDir);
     }

@@ -48,7 +48,7 @@ public class BitcaskImpl implements Bitcask {
         var recordRef = keyDir.get(key);
         if (recordRef == null)
             return null;
-        var record = FileUtils.getRecord(keyDir.get(key));
+        var record = FileUtils.getRecord(recordRef);
         return RecordParser.toKeyValuePair(record).getValue();
     }
 

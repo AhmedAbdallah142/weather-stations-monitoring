@@ -16,8 +16,10 @@ public class WeatherStation {
     private static long sNo = 1;
 
     public static void main(String[] args) {
-        int STATION_ID = args.length > 0 ? Integer.parseInt(args[0]) : 1;
-        String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost:9092");
+        Random random = new Random();
+
+        int STATION_ID = Math.abs(random.nextInt());
+        String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost") + ":9092";
 
         Properties properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka);
@@ -26,7 +28,7 @@ public class WeatherStation {
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 StringSerializer.class.getName());
 
-        Random random = new Random();
+
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
@@ -59,8 +61,6 @@ public class WeatherStation {
             }
         };
         timer.scheduleAtFixedRate(task, 0, 1000);
-
-
     }
 
     static String selectBatteryStatus(Random random) {

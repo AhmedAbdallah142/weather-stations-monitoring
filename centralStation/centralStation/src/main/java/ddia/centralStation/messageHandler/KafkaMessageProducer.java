@@ -14,7 +14,7 @@ public class KafkaMessageProducer {
     private final String topicName;
 
     public KafkaMessageProducer(String topicName) {
-        String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost:9092");
+        String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost") + ":9092";
         Properties properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka);
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
