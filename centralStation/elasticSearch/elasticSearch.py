@@ -7,7 +7,7 @@ from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
 spark = SparkSession.builder.appName("ParquetToES").getOrCreate()
-parquet_dir = "C:\\Users\\Kimo Store\\Desktop\\archive"
+parquet_dir = "../data/archive"
 timeStamp = 0
 
 index_name = "weather-station"
