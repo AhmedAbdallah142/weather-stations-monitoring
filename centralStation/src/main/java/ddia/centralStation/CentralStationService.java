@@ -1,6 +1,6 @@
 package ddia.centralStation;
 
-import ddia.centralStation.messageReciever.KafkaMessageConsumer;
+import ddia.centralStation.messageHandler.KafkaMessageConsumer;
 import ddia.centralStation.models.BitcaskSing;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
