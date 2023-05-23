@@ -3,6 +3,8 @@ package ddia.centralStation.messageArchive;
 import ddia.centralStation.models.StationStatusMessage;
 import org.apache.avro.reflect.ReflectData;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.avro.AvroParquetWriter;
 import org.apache.parquet.hadoop.ParquetWriter;
@@ -18,11 +20,13 @@ import org.apache.parquet.hadoop.ParquetFileWriter.Mode;
 public class ParquetFileWriter {
 
     private static final String PARQUET_EXTENSION = ".parquet";
+    private static final String DESTINATION_PATH = "data/elastic";
 
     public static void writeListToParquetFile(List<StationStatusMessage> messages, String filePath) throws IOException {
         String fileName = System.nanoTime() + PARQUET_EXTENSION;
         Path path = new Path(filePath, fileName);
-        OutputFile outputFile = HadoopOutputFile.fromPath(path, new Configuration());
+        Configuration conf = new Configuration();
+        OutputFile outputFile = HadoopOutputFile.fromPath(path, conf);
         try (ParquetWriter<StationStatusMessage> writer = AvroParquetWriter.<StationStatusMessage>builder(outputFile)
                 .withSchema(ReflectData.AllowNull.get().getSchema(StationStatusMessage.class))
                 .withDataModel(ReflectData.get())
@@ -35,5 +39,11 @@ public class ParquetFileWriter {
                 writer.write(message);
             }
         }
+
+        FileSystem fs = FileSystem.get(conf);
+        // Define the source and destination paths for the file
+        Path dstPath = new Path(DESTINATION_PATH, fileName);
+        // Move the file using the HDFS API
+        FileUtil.copy(fs, path, fs, dstPath, false, conf);
     }
 }

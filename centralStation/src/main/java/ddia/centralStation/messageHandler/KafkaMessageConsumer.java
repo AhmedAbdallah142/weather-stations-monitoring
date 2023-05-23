@@ -29,7 +29,6 @@ public class KafkaMessageConsumer {
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, String> record : records) {
-//                    System.out.println(record.value());
                     String destination = new String(record.headers().toArray()[0].value());
                     if (destination.equalsIgnoreCase("central station"))
                         messageHandler.processMessage(record.value());
