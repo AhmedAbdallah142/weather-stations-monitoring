@@ -15,8 +15,10 @@ public class WeatherStation {
     private static long sNo = 1;
 
     public static void main(String[] args) {
-        int STATION_ID = Integer.parseInt(args[0]);
-        String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost:9092");
+        Random random = new Random();
+
+        int STATION_ID = Math.abs(random.nextInt());
+        String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost") + ":9092";
 
         Properties properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka);
@@ -25,7 +27,7 @@ public class WeatherStation {
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 StringSerializer.class.getName());
 
-        Random random = new Random();
+
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
@@ -37,7 +39,7 @@ public class WeatherStation {
                 int temperature = random.nextInt(201) - 50;
                 int windSpeed = random.nextInt(101);
                 String message = String.format(
-                        "{ \"header\": Central Station,\"message\":{ \"station_id\": %d, \"s_no\": %d, \"battery_status\": \"%s\", " +
+                        "{ \"station_id\": %d, \"s_no\": %d, \"battery_status\": \"%s\", " +
                                 "\"status_timestamp\": %d, \"weather\": { \"humidity\": %d, " +
                                 "\"temperature\": %d, \"wind_speed\": %d } }",
                         STATION_ID, sNo, batteryStatus, statusTimestamp, humidity, temperature, windSpeed);
@@ -56,8 +58,6 @@ public class WeatherStation {
             }
         };
         timer.scheduleAtFixedRate(task, 0, 1000);
-
-
     }
 
     static String selectBatteryStatus(Random random) {

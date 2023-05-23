@@ -4,4 +4,6 @@ WORKDIR /app
 
 RUN sed -i 's/\r$//' mvnw && chmod +x mvnw && ./mvnw clean install
 
-ENTRYPOINT [ "java", "-jar", "target/central-station-jar-with-dependencies.jar"]
+EXPOSE 8082
+
+ENTRYPOINT [ "java", "-jar", "target/central-station.jar"]

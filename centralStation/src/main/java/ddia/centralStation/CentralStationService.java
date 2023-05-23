@@ -25,7 +25,7 @@ public class CentralStationService {
 
     private void weatherMessagesHandler() {
         startBitcaskMergeScheduler();
-        String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost:9092");
+        String kafka = Optional.ofNullable(System.getenv("kafka")).orElse("localhost") + ":9092";
 
         KafkaMessageConsumer.startConsuming(kafka, KAFKA_TOPIC_NAME);
     }

@@ -1,0 +1,23 @@
+### Build Images ###
+docker build -t central-station .
+docker build -t weather-station .
+
+
+### Create Network ###
+docker network create weather-monitoring
+
+
+### Run Containers ###
+docker run -d -p 9092:9092 --name=kafka --network=weather-monitoring `
+    -e ALLOW_PLAINTEXT_LISTENER=yes `
+    -v kafka_data:/bitnami `
+    bitnami/kafka:3.4
+
+docker run -d --name=weather-station --network=weather-monitoring weather-station
+
+docker run -d -p 8082:8082 --name=central-station --network=weather-monitoring central-station
+
+
+### Helper Commands ###
+docker exec -it kafka kafka-console-consumer.sh --topic stations-status --bootstrap-server weather-station:9092
+# --from-beginning
