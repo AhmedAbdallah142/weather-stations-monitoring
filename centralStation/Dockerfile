@@ -16,5 +16,5 @@ RUN pip3 install pandas elasticsearch pyspark watchdog
 
 EXPOSE 8082
 
-# ENTRYPOINT ["sh", "-c", "python -u elasticSearch/elasticSearch.py && java -jar centralStation/target/central-station.jar"]
-ENTRYPOINT [ "python", "-u", "elasticSearch/counter.py"]
+ENTRYPOINT ["sh", "-c", "python -u elasticSearch/elasticSearch.py && java -jar centralStation/target/central-station.jar"]
+# ENTRYPOINT [ "python", "-u", "elasticSearch/counter.py"]
