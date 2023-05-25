@@ -4,9 +4,8 @@ COPY . /app
 
 WORKDIR /app/centralStation
 
-# # Install java
+# Install java
 RUN apt-get update && apt-get install -y openjdk-11-jdk
-
 # RUN sed -i 's/\r$//' mvnw && chmod +x mvnw && ./mvnw clean install
 
 WORKDIR /app
@@ -14,7 +13,11 @@ WORKDIR /app
 # Install python dependencies
 RUN pip3 install pandas elasticsearch pyspark watchdog
 
+# Install supervisord
+RUN apt-get install -y supervisor
+# Copy the supervisord configuration file
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 EXPOSE 8082
 
-ENTRYPOINT ["sh", "-c", "python -u elasticSearch/elasticSearch.py && java -jar centralStation/target/central-station.jar"]
-# ENTRYPOINT [ "python", "-u", "elasticSearch/counter.py"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

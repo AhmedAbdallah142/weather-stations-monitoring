@@ -8,8 +8,12 @@ from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
 spark = SparkSession.builder.appName("ParquetToES").getOrCreate()
-parquet_dir = "../data/archive"
-timeStamp = 0
+
+DATA_PATH = os.environ.get('data_path')
+if DATA_PATH is None:
+    DATA_PATH = "../data"
+    
+parquet_dir = DATA_PATH + "/archive"
 
 index_name = "weather-station"
 
@@ -17,7 +21,9 @@ index_name = "weather-station"
 elastic_search = os.environ.get('elastic_search')
 if elastic_search is None:
     elastic_search = "localhost"
-es = Elasticsearch([f"{elastic_search}:9200"])
+es = Elasticsearch([f"http://{elastic_search}:9200"])
+
+timeStamp = 0
 
 mappings = {
     "properties": {

@@ -17,11 +17,12 @@ services:
     image: central-station
     ports:
       - 8082:8082
-    volumes:
-      - central_station_data:/app/data
     environment:
       - kafka=kafka
       - elastic_search=elasticsearch-kibana
+      - data_path=/app/data
+    volumes:
+      - central_station_data:/app/data
     depends_on:
       - kafka
       - elasticsearch-kibana
