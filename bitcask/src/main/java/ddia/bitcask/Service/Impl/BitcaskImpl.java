@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ public class BitcaskImpl implements Bitcask {
 
     @Override
     public List<byte[]> listKeys() {
-        return keyDir.keySet().stream().map(Key::getBytes).toList();
+        return keyDir.keySet().stream().map(Key::getBytes).collect(Collectors.toList());
     }
 
     @Override
