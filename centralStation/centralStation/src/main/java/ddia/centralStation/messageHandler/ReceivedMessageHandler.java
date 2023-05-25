@@ -1,6 +1,7 @@
 package ddia.centralStation.messageHandler;
 
 import ddia.bitcask.service.Bitcask;
+import ddia.centralStation.config.Props;
 import ddia.centralStation.messageArchive.InMemoryArchive;
 import ddia.centralStation.models.BitcaskSing;
 import ddia.centralStation.models.StationStatusMessage;
@@ -10,7 +11,7 @@ import java.nio.ByteBuffer;
 
 public class ReceivedMessageHandler {
     private static final int BATCH_SIZE = 10000;
-    private static final String ARCHIVE_DIRECTORY = "../data/archive";
+    private static final String ARCHIVE_DIRECTORY = Props.DATA_PATH + "/archive";
     private static final String INVALID_TOPIC_NAME = "invalid-queue";
     KafkaMessageProducer producer;
     private final Bitcask bitcask;

@@ -30,7 +30,8 @@ public class Key {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof Key other) {
+        if (obj instanceof Key) {
+            var other = (Key) obj;
             return Arrays.equals(this.bytes, other.bytes);
         }
         return false;

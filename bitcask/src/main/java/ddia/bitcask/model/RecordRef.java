@@ -25,7 +25,8 @@ public class RecordRef {
     public boolean equals(Object obj) {
         if (this == obj) return true;
 
-        if (obj instanceof RecordRef other) {
+        if (obj instanceof RecordRef) {
+            var other = (RecordRef) obj;
             return Objects.equals(this.filePath, other.filePath)
                     && offset == other.offset
                     && recordLength == other.recordLength;

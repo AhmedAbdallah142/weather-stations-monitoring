@@ -2,9 +2,9 @@ package ddia.centralStation;
 
 import ddia.centralStation.messageHandler.KafkaMessageConsumer;
 import ddia.centralStation.models.BitcaskSing;
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Timer;

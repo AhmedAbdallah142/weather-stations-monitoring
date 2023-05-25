@@ -1,5 +1,6 @@
 package ddia.centralStation.messageArchive;
 
+import ddia.centralStation.config.Props;
 import ddia.centralStation.models.StationStatusMessage;
 import org.apache.avro.reflect.ReflectData;
 import org.apache.hadoop.conf.Configuration;
@@ -20,7 +21,7 @@ import org.apache.parquet.hadoop.ParquetFileWriter.Mode;
 public class ParquetFileWriter {
 
     private static final String PARQUET_EXTENSION = ".parquet";
-    private static final String DESTINATION_PATH = "data/elastic";
+    private static final String DESTINATION_PATH = Props.DATA_PATH + "/elastic";
 
     public static void writeListToParquetFile(List<StationStatusMessage> messages, String filePath) throws IOException {
         String fileName = System.nanoTime() + PARQUET_EXTENSION;
