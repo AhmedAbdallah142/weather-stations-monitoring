@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: weather-station-replicaset
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: weather-station
+  template:
+    metadata:
+      labels:
+        app: weather-station
+    spec:
+      containers:
+        - name: weather-station
+          image: weather-station:latest
+          imagePullPolicy: Never

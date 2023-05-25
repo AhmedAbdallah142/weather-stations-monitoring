@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kafka-pod
+  labels:
+    app: kafka-pod
+spec:
+  containers:
+    - name: kafka-container
+      image: bitnami/kafka
+      ports:
+        - containerPort: 9092
+      env:
+        - name: ALLOW_PLAINTEXT_LISTENER
+          value: "yes"
