@@ -1,7 +1,8 @@
 FROM python:3.9-slim-buster
 
 # Install java
-RUN apt-get update && apt-get install -y openjdk-11-jdk
+RUN apt-get update 
+RUN apt-get install -y openjdk-11-jdk-headless
 # Install python dependencies
 RUN pip3 install pandas elasticsearch pyspark watchdog
 # Install supervisord
