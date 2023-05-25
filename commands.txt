@@ -21,3 +21,4 @@ docker run -d -p 8082:8082 --name=central-station --network=weather-monitoring c
 ### Helper Commands ###
 docker exec -it kafka kafka-console-consumer.sh --topic stations-status --bootstrap-server weather-station:9092
 # --from-beginning
+docker exec weather-stations-monitoring-central-station-1 cat /var/log/python_app.err.log
