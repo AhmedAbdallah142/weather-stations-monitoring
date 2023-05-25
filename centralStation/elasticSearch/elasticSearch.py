@@ -13,9 +13,13 @@ DATA_PATH = os.environ.get('data_path')
 if DATA_PATH is None:
     DATA_PATH = "../data"
     
-parquet_dir = DATA_PATH + "/archive"
+parquet_dir = DATA_PATH + "/elastic"
 
 index_name = "weather-station"
+
+# Make sure the parquet dir exists
+if not os.path.exists(parquet_dir):
+    os.makedirs(parquet_dir)
 
 # Define the Elasticsearch connection settings
 elastic_search = os.environ.get('elastic_search')

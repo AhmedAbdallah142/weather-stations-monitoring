@@ -8,7 +8,6 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
-
 public class KafkaMessageConsumer {
 
     private static final String DEAD_TOPIC_NAME = "dead-letter-queue";
@@ -34,7 +33,6 @@ public class KafkaMessageConsumer {
                         messageHandler.processMessage(record.value());
                     else
                         producer.sendMessage(record.value());
-
                 }
             }
         }
