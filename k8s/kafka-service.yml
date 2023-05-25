@@ -2,9 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: kafka-service
+  labels:
+    app: weather-monitor
+    type: kafka-service
 spec:
   selector:
-    app: kafka-pod
+    app: weather-monitor
+    type: kafka-pod
   ports:
     - name: kafka
       port: 9092

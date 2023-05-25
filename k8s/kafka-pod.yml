@@ -3,13 +3,17 @@ kind: Pod
 metadata:
   name: kafka-pod
   labels:
-    app: kafka-pod
+    app: weather-monitor
+    type: kafka-pod
 spec:
   containers:
     - name: kafka-container
       image: bitnami/kafka
+      imagePullPolicy: Never
       ports:
         - containerPort: 9092
       env:
         - name: ALLOW_PLAINTEXT_LISTENER
           value: "yes"
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: PLAINTEXT://kafka-service:9092
