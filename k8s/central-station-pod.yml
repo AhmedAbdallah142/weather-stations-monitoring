@@ -13,4 +13,14 @@ spec:
       env:
         - name: kafka
           value: kafka-service
-  restartPolicy: Never
+        - name: elastic_search
+          value: elastic-service
+        - name: data_path
+          value: /app/data
+      volumeMounts:
+        - name: data-volume
+          mountPath: /app/data
+  volumes:
+    - name: data-volume
+      persistentVolumeClaim:
+        claimName: pvc

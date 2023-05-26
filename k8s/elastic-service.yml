@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elastic-service
+  labels:
+    app: weather-monitor
+    type: elastic-service
+spec:
+  selector:
+    app: weather-monitor
+    type: elastic-pod
+  ports:
+    - name: elastic
+      port: 9200
+      targetPort: 9200

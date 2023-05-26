@@ -3,7 +3,7 @@ kind: ReplicaSet
 metadata:
   name: weather-station-replicaset
 spec:
-  replicas: 1
+  replicas: 10
   selector:
     matchLabels:
       app: weather-monitor
@@ -20,5 +20,5 @@ spec:
           image: weather-station
           imagePullPolicy: Never
           env:
-          - name: kafka
-            value: "kafka-service"
+            - name: kafka
+              value: "kafka-service"

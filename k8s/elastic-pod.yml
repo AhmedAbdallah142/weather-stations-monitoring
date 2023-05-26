@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: elastic-pod
+  labels:
+    app: weather-monitor
+    type: elastic-pod
+spec:
+  containers:
+    - name: elastic-pod
+      image: nshou/elasticsearch-kibana
+      imagePullPolicy: Never
+      ports:
+        - containerPort: 9200
+        - containerPort: 5601
