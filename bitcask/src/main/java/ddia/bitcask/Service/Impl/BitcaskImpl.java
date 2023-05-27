@@ -91,6 +91,9 @@ public class BitcaskImpl implements Bitcask {
 
     protected void doMerge() throws IOException {
         File activeFile = fileWriter.getActiveFile();
+        if(activeFile == null || !activeFile.exists())
+            return;
+
         fileWriter.addToFileTime(activeFile.getName(), -1);
         String dataFilePath = String.format("%s/temp/%s", directory,
                 fileWriter.addToFileTime(activeFile.getName(), -1));
