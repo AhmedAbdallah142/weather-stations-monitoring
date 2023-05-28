@@ -8,11 +8,10 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class WeatherStationOpenMeteo {
@@ -62,7 +61,9 @@ public class WeatherStationOpenMeteo {
                     System.out.println("Message dropped: " + message);
                 } else {
                     // Producer send message
-                    producer.send(new ProducerRecord<>(topicName, message));
+                    ProducerRecord<String, String> record = new ProducerRecord<>(topicName, message);
+                    record.headers().add("destination", "central station".getBytes(StandardCharsets.UTF_8));
+                    producer.send(record);
                     System.out.println("Weather status message: " + message);
                 }
                 // Increment the message counter
